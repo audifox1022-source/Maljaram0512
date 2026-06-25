@@ -7,11 +7,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "프로그램 안내",
-  description:
-    "말자람터 언어심리연구소에서 제공하는 언어발달 평가, 조음·발음 치료, 인지 학습 치료, 부모 상담 프로그램을 소개합니다.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/programs", {
+    title: "전문 치료 및 맞춤 성장 프로그램 안내 | 말자람터",
+    description: "말자람터 언어심리연구소에서 제공하는 언어발달 평가, 조음·발음 치료, 인지 학습 치료, 부모 상담 프로그램을 소개합니다.",
+  });
+}
 
 // ISR (Incremental Static Regeneration) 설정: 1시간(3600초)마다 주기적 백그라운드 재검증
 export const revalidate = 3600;

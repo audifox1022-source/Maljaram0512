@@ -3,11 +3,14 @@ import { ContactForm } from "./ContactForm";
 import { MessageSquare, Phone, MapPin, Clock } from "lucide-react";
 import { getSiteSettings } from "@/lib/supabase/settings";
 
-export const metadata: Metadata = {
-  title: "문의 및 상담 접수",
-  description:
-    "말자람터 언어심리연구소에 온라인으로 상담 및 치료 문의를 남겨주세요. 공인 언어재활사가 직접 확인 후 친절하게 안내해 드립니다.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/contact", {
+    title: "오시는 길 및 간편 문의 접수 | 말자람터 언어심리연구소",
+    description: "연구소 위치 안내 주소 및 운영 시간, 온라인 사전 문의 남기기 서비스",
+  });
+}
 
 export const dynamic = "force-dynamic";
 

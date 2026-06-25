@@ -4,10 +4,14 @@ import { GalleryGrid } from "./GalleryGrid";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "시설 및 교구 사진 갤러리 | 말자람터 언어심리연구소",
-  description: "아이들이 편안하게 발달할 수 있도록 따스하고 청결하게 설계된 말자람터 언어심리연구소 내부 치료실 전경과 특별 교구재 사진을 확인하세요.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/gallery", {
+    title: "따뜻한 공간 시설 갤러리 | 말자람터 언어심리연구소",
+    description: "아이들이 정서적 안정감을 느끼며 치료받을 수 있도록 청결하고 아늑하게 꾸며진 연구소 내부 전경",
+  });
+}
 
 export default async function GalleryIndexPage() {
   const items = await getPublishedGallery();

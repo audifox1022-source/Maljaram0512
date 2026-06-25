@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { Sparkles, Heart, Award, Smile, CheckCircle2 } from "lucide-react";
 import { getSiteSections, getStaffList } from "@/lib/supabase/content";
-
-export const metadata: Metadata = {
-  title: "센터 소개",
-  description: "말자람터 언어심리연구소 인사말, 비전, 전문 치료 인력 및 시설 안내",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata() {
+  return getPageSeo("/about", {
+    title: "연구소 소개 및 전문가 철학 | 말자람터 언어심리연구소",
+    description: "말자람터 언어심리연구소 인사말, 비전, 전문 치료 인력 및 시설 안내",
+  });
+}
 
 export default async function AboutPage() {
   const [sections, staffList] = await Promise.all([

@@ -5,10 +5,14 @@ import { Badge } from "@/components/ui/badge";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "센터 소식 및 공지사항 | 말자람터 언어심리연구소",
-  description: "말자람터 언어심리연구소의 공식 공지사항, 치료 프로그램 일정, 전문가 발달 칼럼 소식을 확인하세요.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/news", {
+    title: "센터 소식 및 발달 칼럼 | 말자람터 언어심리연구소",
+    description: "말자람터 연구소의 신규 일정 안내와 임상 치료사가 직접 쓰는 양육 칼럼 게시판",
+  });
+}
 
 export default async function NewsIndexPage() {
   const posts = await getPublishedPosts();

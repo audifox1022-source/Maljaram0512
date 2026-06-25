@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { ReservationClient } from "./ReservationClient";
 import { CalendarCheck2 } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "상담 및 평가 온라인 예약",
-  description:
-    "말자람터 언어심리연구소의 전문가 초기 상담 및 진단 평가 일정을 온라인으로 간편하고 안전하게 예약하세요. 실시간 예약 슬롯 중복 방지 시스템이 적용되어 있습니다.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/reservation", {
+    title: "실시간 온라인 상담 예약 | 말자람터 언어심리연구소",
+    description: "원하시는 일정과 전문 치료사를 선택하여 간편하게 초기 발달 상담 일정을 예약하세요.",
+  });
+}
 
 export default function ReservationPage() {
   return (

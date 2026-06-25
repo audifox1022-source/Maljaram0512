@@ -309,6 +309,32 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        11. 페이지별 SEO 메타 저장 (page_seo)
+    ═════════════════════════════════════════════ */
+    if (type === "seo") {
+      if (action === "save") {
+        const { id, path, title, description, keywords, og_image_url } = data;
+        if (supabase && path) {
+          const payload = {
+            title,
+            description,
+            keywords: keywords || "",
+            og_image_url: og_image_url || null,
+            updated_at: new Date().toISOString(),
+          };
+
+          if (id) {
+            await supabase.from("page_seo").update(payload).eq("id", id);
+          } else {
+            const newId = `seo_${Date.now()}`;
+            await supabase.from("page_seo").insert({ ...payload, id: newId, path });
+          }
+        }
+        return NextResponse.json({ success: true, message: "SEO 설정이 갱신되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);

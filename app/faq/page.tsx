@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import { FaqClient } from "./FaqClient";
 import { getFaqList } from "@/lib/supabase/content";
 
-export const metadata: Metadata = {
-  title: "자주 묻는 질문 (FAQ)",
-  description: "말자람터 언어심리연구소 상담 예약, 치료 진행, 바우처 이용 등에 대해 궁금한 점을 확인하세요.",
-};
+import { getPageSeo } from "@/lib/supabase/seo";
+
+export async function generateMetadata() {
+  return getPageSeo("/faq", {
+    title: "자주 묻는 질문 (FAQ) | 말자람터 언어심리연구소",
+    description: "처음 언어치료를 시작하실 때 학부모님들께서 가장 자주 궁금해하시는 질문과 답변 모음",
+  });
+}
 
 export const dynamic = "force-dynamic";
 

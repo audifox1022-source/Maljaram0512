@@ -7,8 +7,16 @@ import { HeroBannerCarousel } from "@/components/home/HeroBannerCarousel";
 import { PopupModal } from "@/components/home/PopupModal";
 import { getPublishedReviews } from "@/lib/supabase/reviews";
 import { ReviewSection } from "@/components/home/ReviewSection";
+import { getPageSeo } from "@/lib/supabase/seo";
 
 export const dynamic = "force-dynamic"; // CMS 수정 시 즉시 반영
+
+export async function generateMetadata() {
+  return getPageSeo("/", {
+    title: "말자람터 언어심리연구소 | 아이의 맑은 목소리가 피어나는 곳",
+    description: "따뜻한 눈빛과 따스한 언어로 아이의 내면을 밝히는 언어발달 및 심리치료 전문센터입니다.",
+  });
+}
 
 export default async function HomePage() {
   const sections = await getSiteSections();
