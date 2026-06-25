@@ -236,6 +236,46 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        9. 공지사항 및 소식 CRUD (posts)
+    ═════════════════════════════════════════════ */
+    if (type === "post") {
+      if (action === "save") {
+        const { id, slug, title, body, thumbnail_url, category, published, published_at } = data;
+        if (supabase) {
+          // 한글 제목 영어 자동 치환 혹은 유니코드 슬러그 처리
+          const safeSlug = slug
+            ? encodeURIComponent(slug.trim().toLowerCase().replace(/\s+/g, "-"))
+            : `post-${Date.now()}`;
+
+          const payload = {
+            slug: safeSlug,
+            title,
+            body,
+            thumbnail_url: thumbnail_url || null,
+            category: category || "공지사항",
+            published: Boolean(published),
+            published_at: published_at || new Date().toISOString(),
+          };
+
+          if (id && !id.startsWith("pt-temp")) {
+            await supabase.from("posts").update(payload).eq("id", id);
+          } else {
+            const newId = `post_${Date.now()}`;
+            await supabase.from("posts").insert({ ...payload, id: newId });
+          }
+        }
+        return NextResponse.json({ success: true, message: "게시글이 저장되었습니다." });
+      }
+
+      if (action === "delete" && data?.id) {
+        if (supabase && !data.id.startsWith("pt-temp")) {
+          await supabase.from("posts").delete().eq("id", data.id);
+        }
+        return NextResponse.json({ success: true, message: "게시글이 삭제되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);
