@@ -2,11 +2,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { HeartHandshake, Sparkles, ShieldCheck, Users } from "lucide-react";
 import { getSiteSections } from "@/lib/supabase/content";
+import { getActiveBanners } from "@/lib/supabase/banners";
+import { HeroBannerCarousel } from "@/components/home/HeroBannerCarousel";
+import { PopupModal } from "@/components/home/PopupModal";
 
 export const dynamic = "force-dynamic"; // CMS 수정 시 즉시 반영
 
 export default async function HomePage() {
   const sections = await getSiteSections();
+  const { hero: heroBanners, popup: popupBanners } = await getActiveBanners();
+
   const hero = sections.hero || {
     title: "아이의 맑은 목소리, 말자람터가 함께 피워냅니다",
     body: "따뜻한 눈빛과 따스한 언어로 아이의 내면을 밝히는 곳. 맞춤 성장 여정을 동행합니다.",
@@ -16,6 +21,9 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <PopupModal banners={popupBanners} />
+      <HeroBannerCarousel banners={heroBanners} />
+
       {/* 1. 히어로 섹션 (따뜻한 색감, 핵심 메시지 + CTA) */}
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-32 bg-gradient-to-b from-[var(--color-brand-cream)] to-background">
         <div className="container-wide">

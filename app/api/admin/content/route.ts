@@ -165,6 +165,42 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        7. 메인 배너 및 팝업 CRUD (banners)
+    ═════════════════════════════════════════════ */
+    if (type === "banner") {
+      if (action === "save") {
+        const { id, title, image_url, link_url, type: bType, active, start_at, end_at, display_order } = data;
+        if (supabase) {
+          const payload = {
+            title,
+            image_url: image_url || "/file.svg",
+            link_url: link_url || "",
+            type: bType || "hero",
+            active: Boolean(active),
+            start_at: start_at || null,
+            end_at: end_at || null,
+            display_order: Number(display_order) || 0,
+          };
+
+          if (id && !id.startsWith("bn-temp")) {
+            await supabase.from("banners").update(payload).eq("id", id);
+          } else {
+            const newId = `banner_${Date.now()}`;
+            await supabase.from("banners").insert({ ...payload, id: newId });
+          }
+        }
+        return NextResponse.json({ success: true, message: "배너 설정이 반영되었습니다." });
+      }
+
+      if (action === "delete" && data?.id) {
+        if (supabase && !data.id.startsWith("bn-temp")) {
+          await supabase.from("banners").delete().eq("id", data.id);
+        }
+        return NextResponse.json({ success: true, message: "배너가 삭제되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);
