@@ -136,7 +136,12 @@ async function executeContentAdmin(req: Request) {
       if (supabase) {
         const payload = { ...data, id: 1, updated_at: new Date().toISOString() };
         const { error } = await supabase.from("site_settings").upsert(payload, { onConflict: "id" });
-        if (error) console.warn("Supabase RLS 권한 경고(서비스 롤 키 필요):", error.message);
+        if (error) {
+          console.warn("Supabase DB 저장 차단됨:", error.message);
+          return NextResponse.json({ success: false, error: `DB 저장 거부됨: ${error.message} (Supabase 홈페이지의 SQL Editor에서 12번 스크립트를 꼭 Run 실행해 주세요!)` }, { status: 500 });
+        }
+      } else {
+        return NextResponse.json({ success: false, error: "Supabase 연결 환경변수가 없습니다." }, { status: 500 });
       }
       return NextResponse.json({ success: true, message: "사이트 기본 설정이 성공적으로 반영되었습니다." });
     }

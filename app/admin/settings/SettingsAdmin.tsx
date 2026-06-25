@@ -30,7 +30,7 @@ export function SettingsAdmin({ initialSettings }: { initialSettings: SiteSettin
       if (res.ok && data.success) {
         toast.success(data.message);
       } else {
-        toast.error("저장에 실패했습니다.");
+        toast.error(data.error || "저장에 실패했습니다.");
       }
     } catch {
       toast.error("서버와 통신 중 에러가 발생했습니다.");
