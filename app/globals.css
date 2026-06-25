@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-nanum);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ── 말자람터 브랜드 색상 토큰 ── */
+  --color-brand-green:          #5C8B6E; /* 세이지 그린 — 주색 (성장·안정) */
+  --color-brand-green-dark:     #3D6B52;
+  --color-brand-green-light:    #A8C5B5;
+  --color-brand-orange:         #F4A261; /* 웜 오렌지 — 보조색 (따뜻함) */
+  --color-brand-orange-dark:    #E07B3A;
+  --color-brand-orange-light:   #FAD4B2;
+  --color-brand-teal:           #264653; /* 딥 틸 — 포인트 (신뢰·전문성) */
+  --color-brand-cream:          #FDF8F3; /* 크림화이트 — 배경 */
+  --color-brand-beige:          #E8D5C0; /* 베이지 — 구분선·서브 배경 */
+  --color-brand-text:           #2D2D2D; /* 본문 텍스트 */
+  --color-brand-text-muted:     #6B7280; /* 보조 텍스트 */
+}
+
+/* ── 라이트 모드 (기본) ── */
+:root {
+  --background:          oklch(0.99 0.008 80);   /* 크림화이트 */
+  --foreground:          oklch(0.18 0.01 200);   /* 딥 틸 계열 */
+  --card:                oklch(1 0 0);
+  --card-foreground:     oklch(0.18 0.01 200);
+  --popover:             oklch(1 0 0);
+  --popover-foreground:  oklch(0.18 0.01 200);
+
+  /* primary = 세이지 그린 */
+  --primary:             oklch(0.55 0.07 158);
+  --primary-foreground:  oklch(0.99 0 0);
+
+  /* secondary = 웜 오렌지 */
+  --secondary:           oklch(0.78 0.1 55);
+  --secondary-foreground: oklch(0.18 0.01 200);
+
+  --muted:               oklch(0.93 0.02 60);    /* 베이지 */
+  --muted-foreground:    oklch(0.52 0.02 200);
+
+  /* accent = 딥 틸 */
+  --accent:              oklch(0.32 0.05 210);
+  --accent-foreground:   oklch(0.99 0 0);
+
+  --destructive:         oklch(0.577 0.245 27.325);
+  --border:              oklch(0.88 0.02 60);    /* 베이지 계열 */
+  --input:               oklch(0.88 0.02 60);
+  --ring:                oklch(0.55 0.07 158);   /* 세이지 그린 */
+
+  --chart-1:             oklch(0.55 0.07 158);
+  --chart-2:             oklch(0.78 0.1 55);
+  --chart-3:             oklch(0.32 0.05 210);
+  --chart-4:             oklch(0.70 0.08 100);
+  --chart-5:             oklch(0.60 0.06 350);
+
+  --radius:              0.75rem;
+
+  --sidebar:             oklch(0.97 0.01 80);
+  --sidebar-foreground:  oklch(0.18 0.01 200);
+  --sidebar-primary:     oklch(0.55 0.07 158);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent:      oklch(0.93 0.02 60);
+  --sidebar-accent-foreground: oklch(0.18 0.01 200);
+  --sidebar-border:      oklch(0.88 0.02 60);
+  --sidebar-ring:        oklch(0.55 0.07 158);
+}
+
+/* ── 다크 모드 (향후 대비) ── */
+.dark {
+  --background:          oklch(0.15 0.02 210);
+  --foreground:          oklch(0.95 0.01 80);
+  --card:                oklch(0.20 0.02 210);
+  --card-foreground:     oklch(0.95 0.01 80);
+  --popover:             oklch(0.20 0.02 210);
+  --popover-foreground:  oklch(0.95 0.01 80);
+  --primary:             oklch(0.65 0.08 158);
+  --primary-foreground:  oklch(0.10 0.01 200);
+  --secondary:           oklch(0.35 0.03 60);
+  --secondary-foreground: oklch(0.95 0.01 80);
+  --muted:               oklch(0.27 0.02 210);
+  --muted-foreground:    oklch(0.65 0.02 200);
+  --accent:              oklch(0.50 0.07 210);
+  --accent-foreground:   oklch(0.95 0.01 80);
+  --destructive:         oklch(0.704 0.191 22.216);
+  --border:              oklch(1 0 0 / 10%);
+  --input:               oklch(1 0 0 / 15%);
+  --ring:                oklch(0.65 0.08 158);
+  --chart-1:             oklch(0.65 0.08 158);
+  --chart-2:             oklch(0.78 0.1 55);
+  --chart-3:             oklch(0.50 0.07 210);
+  --chart-4:             oklch(0.70 0.08 100);
+  --chart-5:             oklch(0.60 0.06 350);
+  --sidebar:             oklch(0.20 0.02 210);
+  --sidebar-foreground:  oklch(0.95 0.01 80);
+  --sidebar-primary:     oklch(0.65 0.08 158);
+  --sidebar-primary-foreground: oklch(0.10 0.01 200);
+  --sidebar-accent:      oklch(0.27 0.02 210);
+  --sidebar-accent-foreground: oklch(0.95 0.01 80);
+  --sidebar-border:      oklch(1 0 0 / 10%);
+  --sidebar-ring:        oklch(0.65 0.08 158);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+/* ── 커스텀 유틸리티 ── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .section-padding {
+    @apply px-4 md:px-8 lg:px-16 xl:px-24;
+  }
+  .container-narrow {
+    @apply max-w-4xl mx-auto;
+  }
+  .container-wide {
+    @apply max-w-7xl mx-auto;
+  }
+}
