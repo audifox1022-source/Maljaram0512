@@ -13,19 +13,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import type { SiteSettings } from "@/lib/supabase/settings";
+import { defaultHeaderMenus, type NavMenu } from "@/lib/supabase/menus";
 
-const navItems = [
-  { label: "홈", href: "/" },
-  { label: "소개", href: "/about" },
-  { label: "프로그램", href: "/programs" },
-  { label: "예약", href: "/reservation" },
-  { label: "문의", href: "/contact" },
-  { label: "FAQ", href: "/faq" },
-] as const;
-
-export function Header() {
+export function Header({ settings, menus }: { settings?: SiteSettings; menus?: NavMenu[] }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const siteName = settings?.site_name || "말자람터 언어심리연구소";
+  const phoneNum = settings?.phone || "02-1234-5678";
+  const logoUrl = settings?.logo_url;
+
+  const activeMenus = menus && menus.length > 0 ? menus : defaultHeaderMenus;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -34,41 +33,42 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
       <div className="container-wide section-padding">
         <div className="flex h-16 items-center justify-between">
-
           {/* ── 로고 ── */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 group"
-            aria-label="말자람터 언어심리연구소 홈으로"
-          >
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-white text-sm font-bold shadow-sm transition-transform group-hover:scale-105"
-              style={{ background: "var(--color-brand-green)" }}
-              aria-hidden="true"
-            >
-              말
-            </div>
+          <Link href="/" className="flex items-center gap-2.5 group" aria-label={`${siteName} 홈으로`}>
+            {logoUrl && logoUrl !== "/file.svg" ? (
+              <img src={logoUrl} alt="로고" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
+            ) : (
+              <div
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-white text-sm font-bold shadow-sm transition-transform group-hover:scale-105 shrink-0"
+                style={{ background: "var(--color-brand-green)" }}
+                aria-hidden="true"
+              >
+                말
+              </div>
+            )}
             <div className="leading-tight">
               <p className="text-sm font-bold" style={{ color: "var(--color-brand-teal)" }}>
-                말자람터
+                {siteName.replace(" 언어심리연구소", "")}
               </p>
               <p className="text-[10px] text-muted-foreground tracking-wide">
-                언어심리연구소
+                {siteName.includes("언어심리연구소") ? "언어심리연구소" : "공식 센터"}
               </p>
             </div>
           </Link>
 
           {/* ── 데스크톱 내비게이션 ── */}
           <nav className="hidden md:flex items-center gap-1" aria-label="주 메뉴">
-            {navItems.map((item) => (
+            {activeMenus.map((item) => (
               <Link
-                key={item.href}
+                key={item.id}
                 href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noreferrer" : undefined}
                 className={cn(
                   "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200",
                   "hover:bg-primary/10 hover:text-primary",
                   isActive(item.href)
-                    ? "text-primary bg-primary/10"
+                    ? "text-primary bg-primary/10 font-bold"
                     : "text-muted-foreground"
                 )}
                 aria-current={isActive(item.href) ? "page" : undefined}
@@ -87,16 +87,17 @@ export function Header() {
           {/* ── 데스크톱 우측 버튼 ── */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="tel:0000000000"
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+              href={`tel:${phoneNum}`}
+              className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
               aria-label="전화 문의"
             >
-              <Phone className="h-4 w-4" aria-hidden="true" />
-              <span>전화 문의</span>
+              <Phone className="h-4 w-4 text-[var(--color-brand-green)]" aria-hidden="true" />
+              <span>{phoneNum}</span>
             </a>
             <Link
               href="/reservation"
-              className={cn(buttonVariants({ size: "sm" }), "rounded-full px-5")}
+              className={cn(buttonVariants({ size: "sm" }), "rounded-full px-6 font-bold shadow-sm")}
+              style={{ background: "var(--color-brand-teal)", color: "white" }}
             >
               예약하기
             </Link>
@@ -106,12 +107,7 @@ export function Header() {
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
               render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                  aria-label="모바일 메뉴 열기"
-                />
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="모바일 메뉴 열기" />
               }
             >
               <Menu className="h-5 w-5" />
@@ -127,8 +123,8 @@ export function Header() {
                       말
                     </div>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: "var(--color-brand-teal)" }}>
-                        말자람터 언어심리연구소
+                      <p className="text-sm font-bold line-clamp-1" style={{ color: "var(--color-brand-teal)" }}>
+                        {siteName}
                       </p>
                     </div>
                   </div>
@@ -136,16 +132,17 @@ export function Header() {
               </SheetHeader>
 
               <nav className="mt-8 flex flex-col gap-1" aria-label="모바일 메뉴">
-                {navItems.map((item) => (
+                {activeMenus.map((item) => (
                   <Link
-                    key={item.href}
+                    key={item.id}
                     href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all",
                       "hover:bg-primary/10 hover:text-primary",
                       isActive(item.href)
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/10 text-primary font-bold"
                         : "text-muted-foreground"
                     )}
                     aria-current={isActive(item.href) ? "page" : undefined}
@@ -155,20 +152,21 @@ export function Header() {
                 ))}
               </nav>
 
-              <div className="mt-6 pt-6 border-t border-border">
+              <div className="mt-6 pt-6 border-t border-border space-y-2">
                 <Link
                   href="/reservation"
                   onClick={() => setMobileOpen(false)}
-                  className={cn(buttonVariants(), "w-full rounded-xl")}
+                  className={cn(buttonVariants(), "w-full rounded-full font-bold")}
+                  style={{ background: "var(--color-brand-teal)", color: "white" }}
                 >
                   상담 예약하기
                 </Link>
                 <a
-                  href="tel:0000000000"
-                  className="mt-3 flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2"
+                  href={`tel:${phoneNum}`}
+                  className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors py-2.5 bg-muted rounded-full"
                 >
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                  전화 문의하기
+                  <Phone className="h-4 w-4 text-[var(--color-brand-green)]" aria-hidden="true" />
+                  <span>전화 ({phoneNum})</span>
                 </a>
               </div>
             </SheetContent>

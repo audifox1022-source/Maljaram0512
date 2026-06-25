@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContactForm } from "./ContactForm";
 import { MessageSquare, Phone, MapPin, Clock } from "lucide-react";
+import { getSiteSettings } from "@/lib/supabase/settings";
 
 export const metadata: Metadata = {
   title: "문의 및 상담 접수",
@@ -8,7 +9,11 @@ export const metadata: Metadata = {
     "말자람터 언어심리연구소에 온라인으로 상담 및 치료 문의를 남겨주세요. 공인 언어재활사가 직접 확인 후 친절하게 안내해 드립니다.",
 };
 
-export default function ContactPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+
   return (
     <>
       {/* ══════════════════════════════════════════
@@ -82,11 +87,11 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground uppercase">전화 문의</p>
                     <a
-                      href="tel:0000000000"
+                      href={`tel:${settings.phone}`}
                       className="text-lg font-bold hover:underline mt-0.5 block"
                       style={{ color: "var(--color-brand-teal)" }}
                     >
-                      000-0000-0000
+                      {settings.phone}
                     </a>
                   </div>
                 </div>
@@ -99,9 +104,10 @@ export default function ContactPage() {
                     <Clock className="h-5 w-5" style={{ color: "var(--color-brand-orange-dark)" }} />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase">운영 시간</p>
-                    <p className="text-sm font-semibold text-foreground mt-1">평일 09:00 – 18:00</p>
-                    <p className="text-xs text-muted-foreground">토요일 09:00 – 13:00 (일·공휴일 휴무)</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase">운영 시간 안내</p>
+                    <p className="text-sm font-semibold text-foreground mt-1 leading-relaxed">
+                      {settings.business_hours}
+                    </p>
                   </div>
                 </div>
 
@@ -114,8 +120,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground uppercase">센터 위치</p>
-                    <p className="text-sm font-semibold text-foreground mt-1">서울특별시 ○○구 말자람로 123, 2층</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">건물 내 지하주차장 1시간 무료 지원</p>
+                    <p className="text-sm font-semibold text-foreground mt-1">{settings.address}</p>
+                    <p className="text-xs text-muted-foreground mt-1">방문 전 상담 가능 슬롯을 확인하세요.</p>
                   </div>
                 </div>
               </div>

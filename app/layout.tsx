@@ -4,6 +4,8 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { getSiteSettings } from "@/lib/supabase/settings";
+import { getNavMenus } from "@/lib/supabase/menus";
 
 /* ── 한국어 폰트 ── */
 const notoSansKR = Noto_Sans_KR({
@@ -60,7 +62,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/og-image.png", // 추후 실제 OG 이미지로 교체
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: siteName,
@@ -71,64 +73,47 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteName,
     description: siteDescription,
-  },
-  alternates: {
-    canonical: siteUrl,
+    images: ["/og-image.png"],
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#5C8B6E", // 세이지 그린
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#0A7E8C",
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": siteName,
-  "image": `${siteUrl}/og-image.png`,
-  "@id": siteUrl,
-  "url": siteUrl,
-  "telephone": "02-1234-5678",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "도보 3분 거리 빌딩 2층",
-    "addressLocality": "서울시",
-    "addressRegion": "서울특별시",
-    "postalCode": "01234",
-    "addressCountry": "KR"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 37.5665,
-    "longitude": 126.9780
-  },
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      "opens": "10:00",
-      "closes": "19:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Saturday"],
-      "opens": "09:00",
-      "closes": "15:00"
-    }
-  ],
-  "sameAs": [
-    "https://instagram.com",
-    "https://blog.naver.com"
-  ]
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+  const menus = await getNavMenus();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalClinic",
+    "name": settings.site_name,
+    "url": siteUrl,
+    "logo": `${siteUrl}${settings.logo_url}`,
+    "telephone": settings.phone,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": settings.address,
+      "addressLocality": "Seoul",
+      "addressCountry": "KR"
+    },
+    "sameAs": [
+      settings.instagram_url,
+      settings.blog_url,
+      settings.youtube_url,
+      settings.kakao_url
+    ].filter(Boolean)
+  };
+
   return (
     <html lang="ko" className={`${notoSansKR.variable} h-full`}>
       <head>
@@ -138,7 +123,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col antialiased bg-background text-foreground">
-        {/* 접근성: 본문 바로가기 링크 */}
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:text-sm focus:font-medium"
@@ -146,13 +130,13 @@ export default function RootLayout({
           본문 바로가기
         </a>
 
-        <Header />
+        <Header settings={settings} menus={menus.header} />
 
         <main id="main-content" className="flex-1">
           {children}
         </main>
 
-        <Footer />
+        <Footer settings={settings} menus={menus.footer} />
         <Toaster position="top-center" richColors />
       </body>
     </html>

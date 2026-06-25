@@ -127,6 +127,44 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        5. 사이트 기본설정 싱글톤 저장 (site_settings)
+    ═════════════════════════════════════════════ */
+    if (type === "settings" && action === "save") {
+      if (supabase) {
+        const payload = { ...data, id: 1, updated_at: new Date().toISOString() };
+        const { error } = await supabase.from("site_settings").upsert(payload, { onConflict: "id" });
+        if (error) throw error;
+      }
+      return NextResponse.json({ success: true, message: "사이트 기본 설정이 성공적으로 반영되었습니다." });
+    }
+
+    /* ═════════════════════════════════════════════
+        6. 네비게이션 메뉴 CRUD (nav_menus)
+    ═════════════════════════════════════════════ */
+    if (type === "menu") {
+      if (action === "save") {
+        const { id, label, href, location, display_order, visible } = data;
+        if (supabase) {
+          const payload = { label, href, location: location || "header", display_order: Number(display_order) || 0, visible: Boolean(visible) };
+          if (id && !id.startsWith("nm-temp")) {
+            await supabase.from("nav_menus").update(payload).eq("id", id);
+          } else {
+            const newId = `menu_${Date.now()}`;
+            await supabase.from("nav_menus").insert({ ...payload, id: newId });
+          }
+        }
+        return NextResponse.json({ success: true, message: "메뉴 설정이 저장되었습니다." });
+      }
+
+      if (action === "delete" && data?.id) {
+        if (supabase && !data.id.startsWith("nm-temp")) {
+          await supabase.from("nav_menus").delete().eq("id", data.id);
+        }
+        return NextResponse.json({ success: true, message: "메뉴 항목이 삭제되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);

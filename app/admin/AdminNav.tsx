@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LayoutDashboard, CalendarCheck, Clock, MessageSquare, LogOut, Shield, FileEdit, Users, BookOpen, HelpCircle } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, Clock, MessageSquare, LogOut, Shield, FileEdit, Users, BookOpen, HelpCircle, Settings, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminNav() {
@@ -38,6 +38,8 @@ export function AdminNav() {
     { name: "전문가 프로필", href: "/admin/staff", icon: Users },
     { name: "프로그램 안내", href: "/admin/programs", icon: BookOpen },
     { name: "FAQ 문답 설정", href: "/admin/faqs", icon: HelpCircle },
+    { name: "사이트 설정", href: "/admin/settings", icon: Settings },
+    { name: "메뉴 설정", href: "/admin/menus", icon: Compass },
   ];
 
   return (
