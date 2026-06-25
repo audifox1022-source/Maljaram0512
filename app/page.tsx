@@ -5,12 +5,15 @@ import { getSiteSections } from "@/lib/supabase/content";
 import { getActiveBanners } from "@/lib/supabase/banners";
 import { HeroBannerCarousel } from "@/components/home/HeroBannerCarousel";
 import { PopupModal } from "@/components/home/PopupModal";
+import { getPublishedReviews } from "@/lib/supabase/reviews";
+import { ReviewSection } from "@/components/home/ReviewSection";
 
 export const dynamic = "force-dynamic"; // CMS 수정 시 즉시 반영
 
 export default async function HomePage() {
   const sections = await getSiteSections();
   const { hero: heroBanners, popup: popupBanners } = await getActiveBanners();
+  const reviews = await getPublishedReviews();
 
   const hero = sections.hero || {
     title: "아이의 맑은 목소리, 말자람터가 함께 피워냅니다",
@@ -137,6 +140,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 이용 후기 섹션 (CMS 연동) */}
+      <ReviewSection reviews={reviews} />
 
       {/* 3. 하단 예약/문의 CTA */}
       <section className="py-24 bg-[var(--color-brand-green)] text-white relative overflow-hidden">

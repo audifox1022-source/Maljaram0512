@@ -201,6 +201,41 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        8. 이용 후기 CRUD (reviews)
+    ═════════════════════════════════════════════ */
+    if (type === "review") {
+      if (action === "save") {
+        const { id, author_name, content, rating, image_url, is_anonymous, published, display_order } = data;
+        if (supabase) {
+          const payload = {
+            author_name,
+            content,
+            rating: Number(rating) || 5,
+            image_url: image_url || null,
+            is_anonymous: Boolean(is_anonymous),
+            published: Boolean(published),
+            display_order: Number(display_order) || 0,
+          };
+
+          if (id && !id.startsWith("rv-temp")) {
+            await supabase.from("reviews").update(payload).eq("id", id);
+          } else {
+            const newId = `review_${Date.now()}`;
+            await supabase.from("reviews").insert({ ...payload, id: newId });
+          }
+        }
+        return NextResponse.json({ success: true, message: "이용 후기 설정이 저장되었습니다." });
+      }
+
+      if (action === "delete" && data?.id) {
+        if (supabase && !data.id.startsWith("rv-temp")) {
+          await supabase.from("reviews").delete().eq("id", data.id);
+        }
+        return NextResponse.json({ success: true, message: "후기가 삭제되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);
