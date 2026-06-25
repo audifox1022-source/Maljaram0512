@@ -10,7 +10,9 @@ function getClient() {
     return null;
   }
 
-  return createClient(url, key);
+  return createClient(url, key, {
+    global: { fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }) },
+  });
 }
 
 /* ══════════════════════════════════════════════
@@ -19,7 +21,7 @@ function getClient() {
 export const FALLBACK_SECTIONS: Record<string, { title: string; body: string; image_urls: string[] }> = {
   hero: {
     title: "아이의 맑은 목소리, 말자람터가 함께 피워냅니다",
-    body: "따뜻한 눈빛과 따스한 언어로 아이의 내면을 밝히는 곳. 공인 1급 언어재활사와 임상심리전문가가 한 명 한 명의 맞춤 성장 여정을 동행합니다.",
+    body: "따뜻한 눈빛과 따스한 언어로 아이의 내면을 밝히는 곳. 검증된 전문 언어재활사와 임상심리전문가가 한 명 한 명의 맞춤 성장 여정을 동행합니다.",
     image_urls: ["https://picsum.photos/seed/maljarum1/800/600"],
   },
   greeting: {
@@ -35,7 +37,7 @@ export const FALLBACK_SECTIONS: Record<string, { title: string; body: string; im
 };
 
 export const FALLBACK_STAFF = [
-  { id: "st-1", name: "김지수 원장", role: "대표 언어재활사 (1급)", photo_url: "https://picsum.photos/seed/staff1/400/400", bio: "• 연세대학교 언어병리학 석사\n• 전 대학병원 소아청소년과 언어치료실장\n• 보건복지부 1급 언어재활사", display_order: 1, published: true },
+  { id: "st-1", name: "김지수 원장", role: "대표 언어재활사", photo_url: "https://picsum.photos/seed/staff1/400/400", bio: "• 연세대학교 언어병리학 석사\n• 전 대학병원 소아청소년과 언어치료실장\n• 보건복지부 전문 언어재활사", display_order: 1, published: true },
   { id: "st-2", name: "박서연 치료사", role: "수석 놀이심리전문가", photo_url: "https://picsum.photos/seed/staff2/400/400", bio: "• 이화여자대학교 아동심리학 석사\n• 한국심리학회 임상심리전문가\n• RT 부모상호작용 전문가", display_order: 2, published: true },
   { id: "st-3", name: "이진우 연구원", role: "인지언어 담당 치료사", photo_url: "https://picsum.photos/seed/staff3/400/400", bio: "• 한림대학교 언어청각학 학사\n• AAC 보완대체의사소통 교육 이수", display_order: 3, published: true },
 ];

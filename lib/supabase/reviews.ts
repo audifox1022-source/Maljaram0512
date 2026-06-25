@@ -43,7 +43,9 @@ function getStaticClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key || url.includes("your-project")) return null;
-  return createClient(url, key);
+  return createClient(url, key, {
+    global: { fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }) },
+  });
 }
 
 /**

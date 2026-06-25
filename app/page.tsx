@@ -120,9 +120,9 @@ export default async function HomePage() {
               <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-green-light)] flex items-center justify-center text-[var(--color-brand-green)]">
                 <ShieldCheck className="h-7 w-7" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">공인 1급 전문가 자격</h3>
+              <h3 className="text-xl font-bold text-foreground">검증된 전문 치료진 자격</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                보건복지부 국가공인 1급 언어재활사 및 임상심리전문가 등 풍부한 임상 경력을 갖춘 탄탄한 치료진이 직접 평가하고 치료합니다.
+                보건복지부 자격 및 임상심리전문가 등 풍부한 임상 경력을 갖춘 탄탄한 치료진이 직접 평가하고 치료합니다.
               </p>
             </div>
 

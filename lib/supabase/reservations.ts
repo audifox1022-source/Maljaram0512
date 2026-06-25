@@ -23,7 +23,9 @@ function getSupabaseClient() {
     return null;
   }
 
-  return createClient(url, key);
+  return createClient(url, key, {
+    global: { fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }) },
+  });
 }
 
 /**
