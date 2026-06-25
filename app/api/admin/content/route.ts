@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -15,7 +16,7 @@ function getAdminClient() {
   return createClient(url, key);
 }
 
-export async function POST(req: Request) {
+async function executeContentAdmin(req: Request) {
   try {
     const body = await req.json();
     const { type, action, data } = body;
@@ -341,4 +342,34 @@ export async function POST(req: Request) {
     console.error("콘텐츠 CMS API 예외:", err);
     return NextResponse.json({ success: false, error: err?.message || "서버 오류" }, { status: 500 });
   }
+}
+
+/**
+ * 전역 캐시 파기(Purge)를 보장하는 래퍼 POST 핸들러
+ * 관리자에서 설정/텍스트/배너/후기/게시글/갤러리 수정 성공 시 즉시 캐시 초기화
+ */
+export async function POST(req: Request) {
+  const clonedReq = req.clone();
+  const res = await executeContentAdmin(clonedReq);
+
+  try {
+    const clonedRes = res.clone();
+    const data = await clonedRes.json();
+
+    if (data?.success) {
+      // 방식 B: 성능(ISR)을 유지하되 관리자 수정 성공 시 전역 풀 라우트 캐시 재검증!
+      revalidatePath("/", "layout");
+      revalidatePath("/about", "page");
+      revalidatePath("/programs", "page");
+      revalidatePath("/reservation", "page");
+      revalidatePath("/contact", "page");
+      revalidatePath("/faq", "page");
+      revalidatePath("/news", "page");
+      revalidatePath("/gallery", "page");
+    }
+  } catch (err) {
+    console.warn("캐시 재검증 중 예외 발생:", err);
+  }
+
+  return res;
 }
