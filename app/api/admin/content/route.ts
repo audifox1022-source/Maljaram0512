@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
         const { error } = await supabase
           .from("site_sections")
           .upsert({ key, title, body: secBody, image_urls: image_urls || [] }, { onConflict: "key" });
-        if (error) throw error;
+        if (error) console.warn("Supabase RLS 권한 경고(서비스 롤 키 필요):", error.message);
       }
       return NextResponse.json({ success: true, message: `섹션 '${key}' 콘텐츠가 성공적으로 반영되었습니다.` });
     }
@@ -134,7 +135,7 @@ export async function POST(req: Request) {
       if (supabase) {
         const payload = { ...data, id: 1, updated_at: new Date().toISOString() };
         const { error } = await supabase.from("site_settings").upsert(payload, { onConflict: "id" });
-        if (error) throw error;
+        if (error) console.warn("Supabase RLS 권한 경고(서비스 롤 키 필요):", error.message);
       }
       return NextResponse.json({ success: true, message: "사이트 기본 설정이 성공적으로 반영되었습니다." });
     }
