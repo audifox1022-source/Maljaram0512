@@ -155,18 +155,23 @@ async function executeContentAdmin(req: Request) {
         if (supabase) {
           const payload = { label, href, location: location || "header", display_order: Number(display_order) || 0, visible: Boolean(visible) };
           if (id && !id.startsWith("nm-temp")) {
-            await supabase.from("nav_menus").update(payload).eq("id", id);
+            const { error } = await supabase.from("nav_menus").update(payload).eq("id", id);
+            if (error) return NextResponse.json({ success: false, error: `메뉴 수정 실패: ${error.message} (Supabase 웹사이트 SQL Editor에서 13번 스크립트를 실행해 주세요)` }, { status: 500 });
           } else {
             const newId = `menu_${Date.now()}`;
-            await supabase.from("nav_menus").insert({ ...payload, id: newId });
+            const { error } = await supabase.from("nav_menus").insert({ ...payload, id: newId });
+            if (error) return NextResponse.json({ success: false, error: `메뉴 추가 실패: ${error.message} (Supabase 웹사이트 SQL Editor에서 13번 스크립트를 실행해 주세요)` }, { status: 500 });
           }
+        } else {
+          return NextResponse.json({ success: false, error: "Supabase 연결 환경변수가 없습니다." }, { status: 500 });
         }
         return NextResponse.json({ success: true, message: "메뉴 설정이 저장되었습니다." });
       }
 
       if (action === "delete" && data?.id) {
         if (supabase && !data.id.startsWith("nm-temp")) {
-          await supabase.from("nav_menus").delete().eq("id", data.id);
+          const { error } = await supabase.from("nav_menus").delete().eq("id", data.id);
+          if (error) return NextResponse.json({ success: false, error: `메뉴 삭제 실패: ${error.message}` }, { status: 500 });
         }
         return NextResponse.json({ success: true, message: "메뉴 항목이 삭제되었습니다." });
       }

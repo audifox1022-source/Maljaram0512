@@ -93,8 +93,8 @@ export default async function HomePage() {
                     <HeartHandshake className="h-8 w-8" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground">부모 상담 만족도</p>
-                    <p className="text-xl font-bold text-foreground">98.4% 달성</p>
+                    <p className="text-xs font-semibold text-muted-foreground">진심을 다하는 부모 코칭</p>
+                    <p className="text-lg font-bold text-foreground">매회 맞춤 피드백</p>
                   </div>
                 </div>
               </div>

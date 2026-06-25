@@ -68,9 +68,12 @@ export function MenusAdmin({ initialMenus }: { initialMenus: NavMenu[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "menu", action: "save", data: updated }),
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.success) {
         setMenus((prev) => prev.map((m) => (m.id === menu.id ? updated : m)));
         toast.success(`'${menu.label}' 상태 변경 완료`);
+      } else {
+        toast.error(data?.error || "상태 변경에 실패했습니다.");
       }
     } catch {
       toast.error("변경 에러");
