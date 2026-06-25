@@ -276,6 +276,39 @@ export async function POST(req: Request) {
       }
     }
 
+    /* ═════════════════════════════════════════════
+        10. 사진 갤러리 CRUD (gallery_items)
+    ═════════════════════════════════════════════ */
+    if (type === "gallery") {
+      if (action === "save") {
+        const { id, image_url, caption, category, display_order, published } = data;
+        if (supabase) {
+          const payload = {
+            image_url,
+            caption: caption || "",
+            category: category || "치료실시설",
+            display_order: Number(display_order) || 0,
+            published: Boolean(published),
+          };
+
+          if (id && !id.startsWith("gi-temp")) {
+            await supabase.from("gallery_items").update(payload).eq("id", id);
+          } else {
+            const newId = `gal_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+            await supabase.from("gallery_items").insert({ ...payload, id: newId });
+          }
+        }
+        return NextResponse.json({ success: true, message: "사진 항목이 반영되었습니다." });
+      }
+
+      if (action === "delete" && data?.id) {
+        if (supabase && !data.id.startsWith("gi-temp")) {
+          await supabase.from("gallery_items").delete().eq("id", data.id);
+        }
+        return NextResponse.json({ success: true, message: "사진이 삭제되었습니다." });
+      }
+    }
+
     return NextResponse.json({ success: false, error: "알 수 없는 요청입니다." }, { status: 400 });
   } catch (err: any) {
     console.error("콘텐츠 CMS API 예외:", err);
